@@ -11,10 +11,11 @@
       <Button layoutX="14.0" layoutY="71.0" mnemonicParsing="false" onAction="#startTimer" prefHeight="39.0" prefWidth="147.0" text="START" />
       <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="600.0">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
+          <Menu mnemonicParsing="false" text="Options">
+             <items>
+                <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About Me"></MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#changeActivity" text="Change activity"></MenuItem>
+             </items>
           </Menu>
         </menus>
       </MenuBar>

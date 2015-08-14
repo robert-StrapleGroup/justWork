@@ -7,11 +7,10 @@ import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.DataFormat;
 import javafx.util.Duration;
@@ -22,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -38,10 +38,14 @@ public class MainController {
     private long completeMin = 0;
     private long completeS = 0;
 
-    @FXML private Label category_name;
-    @FXML private Label session_time;
-    @FXML private TableView<HistoryObj> history_table;
-    @FXML private Label complete_time;
+    @FXML
+    private Label category_name;
+    @FXML
+    private Label session_time;
+    @FXML
+    private TableView<HistoryObj> history_table;
+    @FXML
+    private Label complete_time;
 
     private ObservableList<HistoryObj> history = FXCollections.observableArrayList();
     Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
@@ -49,22 +53,22 @@ public class MainController {
         public void handle(ActionEvent event) {
             sessionS++;
             completeS++;
-            if(sessionS > 59){
+            if (sessionS > 59) {
                 sessionMin++;
                 sessionS = 0;
             }
-            if(sessionMin > 59){
+            if (sessionMin > 59) {
                 sessionHour++;
                 sessionMin = 0;
             }
             session_time.setText(Long.toString(sessionHour) + "h "
                     + Long.toString(sessionMin) + "min "
                     + Long.toString(sessionS) + "s");
-            if(completeS >59){
+            if (completeS > 59) {
                 completeMin++;
                 completeS = 0;
             }
-            if(completeMin > 59){
+            if (completeMin > 59) {
                 completeHour++;
                 completeMin = 0;
             }
@@ -73,7 +77,8 @@ public class MainController {
                     + Long.toString(completeS) + "s");
         }
     }));
-    public void onStart(String aActivityName){
+
+    public void onStart(String aActivityName) {
         this.ACTIVITY_NAME = aActivityName;
         xmlParser = new XmlParser();
         TableColumn idCol = new TableColumn("ID");
@@ -107,7 +112,7 @@ public class MainController {
         complete_time.setText(completeTemp.get(0) + "h " + completeTemp.get(1) + "min " + completeTemp.get(2) + "s");
         category_name.setText(ACTIVITY_NAME);
         List<HistoryObj> pHistoryList = xmlParser.getAllHistory(ACTIVITY_NAME);
-        for(int i = 0; i < pHistoryList.size(); i++){
+        for (int i = 0; i < pHistoryList.size(); i++) {
             history.add(pHistoryList.get(i));
         }
     }
@@ -119,10 +124,10 @@ public class MainController {
     }
 
     public void stopTimer(ActionEvent actionEvent) {
-        if(timeline.getStatus() == Animation.Status.RUNNING) {
+        if (timeline.getStatus() == Animation.Status.RUNNING) {
             timeline.stop();
             DateFormat pDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
-            HistoryObj pNewHistoryItem = new HistoryObj(Integer.toString(history.size()+1), pDateFormat.format(timeStamp), pDateFormat.format(Calendar.getInstance().getTime()), session_time.getText(), "Not functional yet");
+            HistoryObj pNewHistoryItem = new HistoryObj(Integer.toString(history.size() + 1), pDateFormat.format(timeStamp), pDateFormat.format(Calendar.getInstance().getTime()), session_time.getText(), "Not functional yet");
             history.add(pNewHistoryItem);
             xmlParser.addHistoryItem(pNewHistoryItem, ACTIVITY_NAME);
             sessionMin = 0;
@@ -131,6 +136,32 @@ public class MainController {
             session_time.setText("0h 0min 0s");
             xmlParser.setCompleteTime(Long.toString(completeHour), Long.toString(completeMin), Long.toString(completeS), ACTIVITY_NAME);
             xmlParser.saveXml();
+        }
+    }
+
+    public void showAbout(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About Me");
+        alert.setHeaderText(null);
+        alert.setContentText("justWork 1.0 Open Source\n" +
+                "Official Contributors: \nRobert Sreberski and" +
+                "Mikolaj Speichert");
+
+        alert.showAndWait();
+    }
+
+    public void changeActivity(ActionEvent actionEvent) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("justWork Change Window");
+        dialog.setHeaderText("Please, type activity you want to start to continue");
+        dialog.setContentText("Activity");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            if (!result.get().equals("")) {
+                ACTIVITY_NAME = result.get();
+                history.clear();
+                onStart(ACTIVITY_NAME);
+            }
         }
     }
 }

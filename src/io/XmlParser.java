@@ -52,9 +52,11 @@ public class XmlParser {
     }
 
     public void createActivity(String aName){
-        Element pNewActivity = history.createElement("activity");
-        pNewActivity.setAttribute("name", aName);
-        root.appendChild(pNewActivity);
+        if(!isActivityExists(aName)){
+            Element pNewActivity = history.createElement("activity");
+            pNewActivity.setAttribute("name", aName);
+            root.appendChild(pNewActivity);
+        }
     }
 
     public boolean isActivityExists(String aName){
