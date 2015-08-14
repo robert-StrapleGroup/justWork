@@ -8,41 +8,54 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controler.MainController">
    <children>
-      <Button layoutX="14.0" layoutY="71.0" mnemonicParsing="false" onAction="#startTimer" prefHeight="39.0" prefWidth="147.0" text="START" />
+      <Button layoutX="14.0" layoutY="71.0" mnemonicParsing="false" onAction="#startTimer" prefHeight="39.0" prefWidth="147.0" style="-fx-font-family: 'VCR OSD Mono';" text="START">
+         <font>
+            <Font size="18.0" />
+         </font></Button>
       <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="600.0">
         <menus>
           <Menu mnemonicParsing="false" text="Options">
              <items>
-                <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About Me"></MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#changeActivity" text="Change activity"></MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About Me" />
+                <MenuItem mnemonicParsing="false" onAction="#changeActivity" text="Change activity" />
              </items>
           </Menu>
         </menus>
       </MenuBar>
-      <Button layoutX="166.0" layoutY="71.0" mnemonicParsing="false" onAction="#stopTimer" prefHeight="39.0" prefWidth="147.0" text="STOP" />
+      <Button layoutX="166.0" layoutY="71.0" mnemonicParsing="false" onAction="#stopTimer" prefHeight="39.0" prefWidth="147.0" style="-fx-font-family: 'VCR OSD Mono';" text="STOP">
+         <font>
+            <Font size="18.0" />
+         </font></Button>
       <Separator layoutX="317.0" layoutY="31.0" orientation="VERTICAL" prefHeight="150.0" prefWidth="5.0" />
-      <Label alignment="CENTER" contentDisplay="TOP" layoutX="3.0" layoutY="33.0" prefHeight="25.0" prefWidth="295.0" text="Session time management">
+      <Label alignment="CENTER" contentDisplay="TOP" layoutX="19.0" layoutY="34.0" prefHeight="25.0" prefWidth="295.0" style="-fx-font-family: 'VCR OSD Mono';" text="SESSION TIME MANAGEMENT">
          <font>
             <Font size="20.0" />
          </font></Label>
-      <Label alignment="CENTER" contentDisplay="TOP" layoutX="298.0" layoutY="35.0" prefHeight="30.0" prefWidth="303.0" text="Complete Time">
+      <Label alignment="CENTER" contentDisplay="TOP" layoutX="299.0" layoutY="91.0" prefHeight="30.0" prefWidth="303.0" style="-fx-font-family: 'VCR OSD Mono';" text="COMPLETE TIME">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label layoutX="346.0" layoutY="82.0" prefHeight="17.0" prefWidth="59.0" text="Activity: " />
-      <Label fx:id="category_name" layoutX="408.0" layoutY="82.0" prefHeight="17.0" prefWidth="147.0" text="SELECT" />
-      <Label fx:id="session_time" alignment="CENTER" layoutX="23.0" layoutY="122.0" prefHeight="55.0" prefWidth="272.0" text="0h 0min 0s" textAlignment="CENTER">
+      <Label layoutX="346.0" layoutY="36.0" prefHeight="21.0" prefWidth="90.0" style="-fx-font-family: 'VCR OSD Mono';" text="ACTIVITY:" AnchorPane.topAnchor="37.0">
+         <font>
+            <Font size="17.0" />
+         </font></Label>
+      <Label fx:id="category_name" layoutX="436.0" layoutY="38.0" prefHeight="17.0" prefWidth="147.0" style="-fx-font-family: 'VCR OSD Mono';" text="ACTIVITY" AnchorPane.topAnchor="39.0">
+         <font>
+            <Font size="15.0" />
+         </font></Label>
+      <Label fx:id="session_time" alignment="CENTER" layoutX="23.0" layoutY="122.0" prefHeight="55.0" prefWidth="272.0" style="-fx-font-family: 'VCR OSD Mono';" text="0 : 0 : 0" textAlignment="CENTER">
          <font>
             <Font size="35.0" />
          </font>
       </Label>
       <TableView fx:id="history_table" editable="true" layoutY="182.0" prefHeight="204.0" prefWidth="561.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="183.0">
          </TableView>
-      <Label fx:id="complete_time" alignment="CENTER" layoutX="314.0" layoutY="122.0" prefHeight="55.0" prefWidth="272.0" text="0h 0min 0s" textAlignment="CENTER">
+      <Label fx:id="complete_time" alignment="CENTER" layoutX="314.0" layoutY="122.0" prefHeight="55.0" prefWidth="272.0" style="-fx-font-family: 'VCR OSD Mono';" text="0 : 0 : 0" textAlignment="CENTER">
          <font>
             <Font size="35.0" />
          </font>
       </Label>
+      <Separator layoutX="320.0" layoutY="70.0" prefHeight="1.0" prefWidth="272.0" AnchorPane.rightAnchor="5.0" />
    </children>
 </AnchorPane>

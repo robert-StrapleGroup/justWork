@@ -61,9 +61,9 @@ public class MainController {
                 sessionHour++;
                 sessionMin = 0;
             }
-            session_time.setText(Long.toString(sessionHour) + "h "
-                    + Long.toString(sessionMin) + "min "
-                    + Long.toString(sessionS) + "s");
+            session_time.setText(Long.toString(sessionHour) + " : "
+                    + Long.toString(sessionMin) + " : "
+                    + Long.toString(sessionS));
             if (completeS > 59) {
                 completeMin++;
                 completeS = 0;
@@ -72,9 +72,9 @@ public class MainController {
                 completeHour++;
                 completeMin = 0;
             }
-            complete_time.setText(Long.toString(completeHour) + "h "
-                    + Long.toString(completeMin) + "min "
-                    + Long.toString(completeS) + "s");
+            complete_time.setText(Long.toString(completeHour) + " : "
+                    + Long.toString(completeMin) + " : "
+                    + Long.toString(completeS));
         }
     }));
 
@@ -109,7 +109,7 @@ public class MainController {
         completeHour = Long.parseLong(completeTemp.get(0));
         completeMin = Long.parseLong(completeTemp.get(1));
         completeS = Long.parseLong(completeTemp.get(2));
-        complete_time.setText(completeTemp.get(0) + "h " + completeTemp.get(1) + "min " + completeTemp.get(2) + "s");
+        complete_time.setText(completeTemp.get(0) + " : " + completeTemp.get(1) + " : " + completeTemp.get(2));
         category_name.setText(ACTIVITY_NAME);
         List<HistoryObj> pHistoryList = xmlParser.getAllHistory(ACTIVITY_NAME);
         for (int i = 0; i < pHistoryList.size(); i++) {
@@ -127,13 +127,13 @@ public class MainController {
         if (timeline.getStatus() == Animation.Status.RUNNING) {
             timeline.stop();
             DateFormat pDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
-            HistoryObj pNewHistoryItem = new HistoryObj(Integer.toString(history.size() + 1), pDateFormat.format(timeStamp), pDateFormat.format(Calendar.getInstance().getTime()), session_time.getText(), "Not functional yet");
+            HistoryObj pNewHistoryItem = new HistoryObj(Integer.toString(history.size() + 1), pDateFormat.format(timeStamp), pDateFormat.format(Calendar.getInstance().getTime()), sessionHour+"h "+sessionMin+"min "+sessionS+"s", "Not functional yet");
             history.add(pNewHistoryItem);
             xmlParser.addHistoryItem(pNewHistoryItem, ACTIVITY_NAME);
             sessionMin = 0;
             sessionS = 0;
             sessionHour = 0;
-            session_time.setText("0h 0min 0s");
+            session_time.setText("0 : 0 : 0");
             xmlParser.setCompleteTime(Long.toString(completeHour), Long.toString(completeMin), Long.toString(completeS), ACTIVITY_NAME);
             xmlParser.saveXml();
         }
