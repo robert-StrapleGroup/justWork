@@ -9,7 +9,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.soap.Node;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -29,6 +28,9 @@ public class XmlParser {
     Document history = null;
     Element root;
 
+    /*
+    *   Konstruktor parsera - otwiera plik xml z historią
+    * */
     public XmlParser() {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -51,6 +53,10 @@ public class XmlParser {
         }
     }
 
+    /*
+    *   tworzy nową aktywność
+    * */
+
     public void createActivity(String aName) {
         if (!isActivityExists(aName)) {
             Element pNewActivity = history.createElement("activity");
@@ -58,6 +64,10 @@ public class XmlParser {
             root.appendChild(pNewActivity);
         }
     }
+
+    /*
+    *   sprawdza istnienie podanej aktywności
+    * */
 
     public boolean isActivityExists(String aName) {
         boolean flag = false;
@@ -71,6 +81,9 @@ public class XmlParser {
         return flag;
     }
 
+    /*
+    *   Zwraca wszystkie stworzone aktywności
+    * */
     public List<String> getAllActivities() {
         List<String> pActivities = new ArrayList<String>();
         NodeList activityList = root.getElementsByTagName("activity");
@@ -81,6 +94,9 @@ public class XmlParser {
         return pActivities;
     }
 
+    /*
+    *   zwraca kompletny czas podanej aktywności
+    * */
     // format hh/mm/ss
     public List<String> getCompleteTime(String activity) {
         List<String> time = new ArrayList<>();
@@ -103,6 +119,10 @@ public class XmlParser {
         }
         return time;
     }
+
+    /*
+    *   ustawia kompletny czas dla podanej aktywności; uruchamiane pod koniec sesji
+    * */
 
     public void setCompleteTime(String h, String min, String s, String activity) {
         NodeList activityList = root.getElementsByTagName("activity");
@@ -127,6 +147,10 @@ public class XmlParser {
         }
     }
 
+    /*
+    *   dodaje informacje o odbytej sesji do historii
+    * */
+
     public void addHistoryItem(HistoryObj historyObj, String activity) {
         NodeList activityList = root.getElementsByTagName("activity");
         for (int i = 0; i < activityList.getLength(); i++) {
@@ -146,6 +170,10 @@ public class XmlParser {
             }
         }
     }
+
+    /*
+    *   zwraca całą historię podanej aktywności
+    * */
 
     public List<HistoryObj> getAllHistory(String activity) {
         List<HistoryObj> pHistoryList = new ArrayList<HistoryObj>();
@@ -170,6 +198,10 @@ public class XmlParser {
         }
         return pHistoryList;
     }
+
+    /*
+    *   zapisuje wszystkie zmiany w strukturze xml-a
+    * */
 
     public void saveXml() {
         TransformerFactory transformerFactory =

@@ -7,21 +7,13 @@ import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.DataFormat;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 import objects.HistoryObj;
 
-import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -54,6 +46,11 @@ public class MainController {
     private Label complete_time;
 
     private ObservableList<HistoryObj> history = FXCollections.observableArrayList();
+
+/*
+*   timeline to stoper główny stoper. zarządza bezpośrednio ui oraz działa na zmiennych globalnych
+* */
+
     Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -84,6 +81,9 @@ public class MainController {
         }
     }));
 
+    /*
+    * Metoda startowa głównego okna; inicjuje parsera, tworzy i wypełnia czas kompletny oraz tabelę
+    * */
     public void onStart(String aActivityName) {
         this.ACTIVITY_NAME = aActivityName;
         xmlParser = new XmlParser();
@@ -123,12 +123,18 @@ public class MainController {
         }
     }
 
+    /*
+    *   Startuje stoper w trybie infinite
+    * */
     public void startTimer(ActionEvent actionEvent) {
         timeStamp = Calendar.getInstance().getTime();
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
+    /*
+    *   Stopuje stoper, zeruje zmienne globalne sesji oraz zapisuje informacje o zakończonej sesji do xmla
+    * */
     public void stopTimer(ActionEvent actionEvent) {
         if (timeline.getStatus() == Animation.Status.RUNNING) {
             timeline.stop();
@@ -145,6 +151,10 @@ public class MainController {
         }
     }
 
+    /*
+    *   Info o mnie
+    * */
+
     public void showAbout(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("About Me");
@@ -155,6 +165,9 @@ public class MainController {
         alert.showAndWait();
     }
 
+    /*
+    *   Zmiana aktywności w głównym oknie (działa podobnie jak komunikaty startowe)
+    * */
     public void changeActivity(ActionEvent actionEvent) {
 //        TextInputDialog dialog = new TextInputDialog();
 //        dialog.setTitle("justWork Change Window");
