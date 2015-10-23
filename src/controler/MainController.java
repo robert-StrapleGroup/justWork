@@ -10,12 +10,18 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.DataFormat;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 import objects.HistoryObj;
 
+import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -87,11 +93,11 @@ public class MainController {
         idCol.setResizable(false);
         TableColumn startCol = new TableColumn("Start Date");
         startCol.setCellValueFactory(new PropertyValueFactory<HistoryObj, String>("dateStart"));
-        startCol.setPrefWidth(115);
+        startCol.setPrefWidth(140);
         startCol.setResizable(false);
         TableColumn finishCol = new TableColumn("Finish Date");
         finishCol.setCellValueFactory(new PropertyValueFactory<HistoryObj, String>("dateEnd"));
-        finishCol.setPrefWidth(115);
+        finishCol.setPrefWidth(140);
         finishCol.setResizable(false);
         TableColumn totalCol = new TableColumn("Activity Time");
         totalCol.setCellValueFactory(new PropertyValueFactory<HistoryObj, String>("timeElapsed"));
@@ -99,7 +105,7 @@ public class MainController {
         totalCol.setResizable(false);
         TableColumn annotationsCol = new TableColumn("Annotations");
         annotationsCol.setCellValueFactory(new PropertyValueFactory<HistoryObj, String>("annotations"));
-        annotationsCol.setPrefWidth(215);
+        annotationsCol.setPrefWidth(165);
         annotationsCol.setResizable(false);
         annotationsCol.setEditable(true);
         history_table.setItems(history);
@@ -127,7 +133,7 @@ public class MainController {
         if (timeline.getStatus() == Animation.Status.RUNNING) {
             timeline.stop();
             DateFormat pDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
-            HistoryObj pNewHistoryItem = new HistoryObj(Integer.toString(history.size() + 1), pDateFormat.format(timeStamp), pDateFormat.format(Calendar.getInstance().getTime()), sessionHour+"h "+sessionMin+"min "+sessionS+"s", "Not functional yet");
+            HistoryObj pNewHistoryItem = new HistoryObj(Integer.toString(history.size() + 1), pDateFormat.format(timeStamp), pDateFormat.format(Calendar.getInstance().getTime()), sessionHour + "h " + sessionMin + "min " + sessionS + "s", "Not functional yet");
             history.add(pNewHistoryItem);
             xmlParser.addHistoryItem(pNewHistoryItem, ACTIVITY_NAME);
             sessionMin = 0;
@@ -144,23 +150,64 @@ public class MainController {
         alert.setTitle("About Me");
         alert.setHeaderText(null);
         alert.setContentText("justWork 1.0 Open Source\n" +
-                "Official Contributors: \nRobert Sreberski and" +
-                "Mikolaj Speichert");
+                "Official Contributors: \nRobert Sreberski");
 
         alert.showAndWait();
     }
 
     public void changeActivity(ActionEvent actionEvent) {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("justWork Change Window");
+//        TextInputDialog dialog = new TextInputDialog();
+//        dialog.setTitle("justWork Change Window");
+//        dialog.setHeaderText("Please, type activity you want to start to continue");
+//        dialog.setContentText("Activity");
+//        Optional<String> result = dialog.showAndWait();
+//        if (result.isPresent()) {
+//            if (!result.get().equals("")) {
+//                ACTIVITY_NAME = result.get();
+//                history.clear();
+//                onStart(ACTIVITY_NAME);
+//            }
+//        }
+
+        List<String> aActivities = xmlParser.getAllActivities();
+        aActivities.add("New activity");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("New activity", aActivities);
+        dialog.setTitle("justWork Start Window");
         dialog.setHeaderText("Please, type activity you want to start to continue");
         dialog.setContentText("Activity");
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
-            if (!result.get().equals("")) {
+            if (!result.get().equals("") && !result.get().equals("New activity")) {
                 ACTIVITY_NAME = result.get();
                 history.clear();
                 onStart(ACTIVITY_NAME);
+            } else if (result.get().equals("New activity")) {
+                TextInputDialog pAddDialog = new TextInputDialog();
+                pAddDialog.setTitle("Add new activity");
+                pAddDialog.setHeaderText("Type in activity you want to add");
+                Optional<String> pAddResult = pAddDialog.showAndWait();
+                if (pAddResult.isPresent()) {
+                    if (!pAddResult.get().equals("")) {
+                        String pNewActivity = pAddResult.get();
+                        if (!xmlParser.isActivityExists(pNewActivity) && !pNewActivity.equals("New activity")) {
+                            xmlParser.createActivity(pNewActivity);
+                            xmlParser.saveXml();
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Activity created");
+                            alert.setHeaderText(pNewActivity);
+                            alert.setContentText("New activity has been created!");
+                            alert.showAndWait();
+                            ACTIVITY_NAME = pNewActivity;
+                            history.clear();
+                            onStart(ACTIVITY_NAME);
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Can't create activity");
+                            alert.setHeaderText("Oups this activity is already existing");
+                            alert.showAndWait();
+                        }
+                    }
+                }
             }
         }
     }

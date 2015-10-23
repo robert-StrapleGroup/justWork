@@ -1,6 +1,7 @@
 package main;
 
 import controler.MainController;
+import io.XmlParser;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
@@ -8,19 +9,22 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
 
 //        Dialog<String> dialog = new Dialog<>();
 //        dialog.setTitle("Login Dialog");
@@ -44,14 +48,18 @@ public class Main extends Application {
 //        grid.add(addButton, 2, 2);
 //        dialog.getDialogPane().setContent(grid);
 //        Optional<String> result = dialog.showAndWait();
-        TextInputDialog dialog = new TextInputDialog();
+        XmlParser xmlParser = new XmlParser();
+        List<String> aActivities = xmlParser.getAllActivities();
+        aActivities.add("New activity");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("New activity", aActivities);
         dialog.setTitle("justWork Start Window");
         dialog.setHeaderText("Please, type activity you want to start to continue");
         dialog.setContentText("Activity");
         Optional<String> result = dialog.showAndWait();
-        if(result.isPresent()) {
-            if(!result.get().equals("")) {
+        if (result.isPresent()) {
+            if (!result.get().equals("") && !result.get().equals("New activity")) {
                 primaryStage.setTitle("justWork");
+                primaryStage.getIcons().add(new Image("/res/justWork.png"));
                 Font.loadFont(Main.class.getResource("/res/vcr.ttf").toExternalForm(), 10);
                 URL location = getClass().getResource("main.fxml");
                 FXMLLoader fxmlLoader = new FXMLLoader(location);
@@ -67,6 +75,32 @@ public class Main extends Application {
                 Scene scene = new Scene(root);
                 primaryStage.setScene(scene);
                 primaryStage.show();
+            } else if (result.get().equals("New activity")) {
+                TextInputDialog pAddDialog = new TextInputDialog();
+                pAddDialog.setTitle("Add new activity");
+                pAddDialog.setHeaderText("Type in activity you want to add");
+                Optional<String> pAddResult = pAddDialog.showAndWait();
+                if (pAddResult.isPresent()) {
+                    if (!pAddResult.get().equals("")) {
+                        String pNewActivity = pAddResult.get();
+                        if (!xmlParser.isActivityExists(pNewActivity) && !pNewActivity.equals("New activity")) {
+                            xmlParser.createActivity(pNewActivity);
+                            xmlParser.saveXml();
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Activity created");
+                            alert.setHeaderText(pNewActivity);
+                            alert.setContentText("New activity has been created!");
+                            alert.showAndWait();
+                            start(primaryStage);
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Can't create activity");
+                            alert.setHeaderText("Oups this activity is already existing");
+                            alert.showAndWait();
+                            start(primaryStage);
+                        }
+                    }
+                }
             } else {
                 start(primaryStage);
             }

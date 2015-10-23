@@ -22,26 +22,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by rober on 13.08.2015.
+ * Created by robert on 13.08.2015.
  */
 public class XmlParser {
     File historyFile = null;
     Document history = null;
     Element root;
 
-    public XmlParser(){
+    public XmlParser() {
         try {
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        historyFile = new File("history.xml");
-        if(historyFile.exists() && !historyFile.isDirectory()){
-            history = dBuilder.parse(historyFile);
-            root = history.getDocumentElement();
-        } else {
-            history = dBuilder.newDocument();
-            root = history.createElement("justRemember_history");
-            history.appendChild(root);
-        }
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            historyFile = new File("history.xml");
+            if (historyFile.exists() && !historyFile.isDirectory()) {
+                history = dBuilder.parse(historyFile);
+                root = history.getDocumentElement();
+            } else {
+                history = dBuilder.newDocument();
+                root = history.createElement("justRemember_history");
+                history.appendChild(root);
+            }
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (SAXException e) {
@@ -51,39 +51,52 @@ public class XmlParser {
         }
     }
 
-    public void createActivity(String aName){
-        if(!isActivityExists(aName)){
+    public void createActivity(String aName) {
+        if (!isActivityExists(aName)) {
             Element pNewActivity = history.createElement("activity");
             pNewActivity.setAttribute("name", aName);
             root.appendChild(pNewActivity);
         }
     }
 
-    public boolean isActivityExists(String aName){
+    public boolean isActivityExists(String aName) {
         boolean flag = false;
         NodeList activityList = root.getElementsByTagName("activity");
-        for(int i = 0; i < activityList.getLength(); i++){
+        for (int i = 0; i < activityList.getLength(); i++) {
             Element pElement = (Element) activityList.item(i);
-            if(pElement.getAttribute("name").toLowerCase().equals(aName.toLowerCase())){
+            if (pElement.getAttribute("name").toLowerCase().equals(aName.toLowerCase())) {
                 flag = true;
             }
         }
         return flag;
     }
- // format hh/mm/ss
-    public List<String> getCompleteTime(String activity){
+
+    public List<String> getAllActivities() {
+        List<String> pActivities = new ArrayList<String>();
+        NodeList activityList = root.getElementsByTagName("activity");
+        for (int i = 0; i < activityList.getLength(); i++) {
+            Element pElement = (Element) activityList.item(i);
+            pActivities.add(pElement.getAttribute("name"));
+        }
+        return pActivities;
+    }
+
+    // format hh/mm/ss
+    public List<String> getCompleteTime(String activity) {
         List<String> time = new ArrayList<>();
         NodeList activityList = root.getElementsByTagName("activity");
-        for(int i = 0; i < activityList.getLength(); i++){
+        for (int i = 0; i < activityList.getLength(); i++) {
             Element pElement = (Element) activityList.item(i);
-            if(pElement.getAttribute("name").toLowerCase().equals(activity.toLowerCase())){
+            if (pElement.getAttribute("name").toLowerCase().equals(activity.toLowerCase())) {
                 NodeList pCompleteTime = pElement.getElementsByTagName("total");
-                if(pCompleteTime.getLength() > 0){
+                if (pCompleteTime.getLength() > 0) {
                     time.add(((Element) pCompleteTime.item(0)).getAttribute("h"));
                     time.add(((Element) pCompleteTime.item(0)).getAttribute("min"));
                     time.add(((Element) pCompleteTime.item(0)).getAttribute("s"));
                 } else {
-                    time.add("0"); time.add("0"); time.add("0");
+                    time.add("0");
+                    time.add("0");
+                    time.add("0");
                 }
             }
 
@@ -91,16 +104,16 @@ public class XmlParser {
         return time;
     }
 
-    public void setCompleteTime(String h, String min, String s, String activity){
+    public void setCompleteTime(String h, String min, String s, String activity) {
         NodeList activityList = root.getElementsByTagName("activity");
-        for(int i = 0; i < activityList.getLength(); i++){
+        for (int i = 0; i < activityList.getLength(); i++) {
             Element pElement = (Element) activityList.item(i);
-            if(pElement.getAttribute("name").toLowerCase().equals(activity.toLowerCase())){
+            if (pElement.getAttribute("name").toLowerCase().equals(activity.toLowerCase())) {
                 NodeList pCompleteTime = pElement.getElementsByTagName("total");
-                if(pCompleteTime.getLength() > 0){
-                    ((Element)pCompleteTime.item(0)).setAttribute("h", h);
-                    ((Element)pCompleteTime.item(0)).setAttribute("min", min);
-                    ((Element)pCompleteTime.item(0)).setAttribute("s", s);
+                if (pCompleteTime.getLength() > 0) {
+                    ((Element) pCompleteTime.item(0)).setAttribute("h", h);
+                    ((Element) pCompleteTime.item(0)).setAttribute("min", min);
+                    ((Element) pCompleteTime.item(0)).setAttribute("s", s);
 
                 } else {
                     Element newCompleteTime = history.createElement("total");
@@ -114,17 +127,17 @@ public class XmlParser {
         }
     }
 
-    public void addHistoryItem(HistoryObj historyObj, String activity){
+    public void addHistoryItem(HistoryObj historyObj, String activity) {
         NodeList activityList = root.getElementsByTagName("activity");
-        for(int i = 0; i < activityList.getLength(); i++) {
+        for (int i = 0; i < activityList.getLength(); i++) {
             Element pElement = (Element) activityList.item(i);
             if (pElement.getAttribute("name").toLowerCase().equals(activity.toLowerCase())) {
-                if(pElement.getElementsByTagName("history").getLength() < 1){
+                if (pElement.getElementsByTagName("history").getLength() < 1) {
                     pElement.appendChild(history.createElement("history"));
                 }
                 Element pHistory = (Element) pElement.getElementsByTagName("history").item(0);
                 Element historyItem = history.createElement("item");
-                historyItem.setAttribute("id",historyObj.getId());
+                historyItem.setAttribute("id", historyObj.getId());
                 historyItem.setAttribute("startDate", historyObj.getDateStart());
                 historyItem.setAttribute("endDate", historyObj.getDateEnd());
                 historyItem.setAttribute("timeElapsed", historyObj.getTimeElapsed());
@@ -143,7 +156,7 @@ public class XmlParser {
                 if (pElement.getElementsByTagName("history").getLength() == 1) {
                     Element pHistory = (Element) pElement.getElementsByTagName("history").item(0);
                     NodeList pHistoryItems = pHistory.getElementsByTagName("item");
-                    for(int j = 0; j < pHistoryItems.getLength(); j++){
+                    for (int j = 0; j < pHistoryItems.getLength(); j++) {
                         Element pHistoryItem = (Element) pHistoryItems.item(j);
                         HistoryObj pHistoryObj = new HistoryObj(pHistoryItem.getAttribute("id"),
                                 pHistoryItem.getAttribute("startDate"),
@@ -158,7 +171,7 @@ public class XmlParser {
         return pHistoryList;
     }
 
-    public void saveXml(){
+    public void saveXml() {
         TransformerFactory transformerFactory =
                 TransformerFactory.newInstance();
         Transformer transformer =
